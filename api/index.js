@@ -70,18 +70,18 @@ const generateSecretKey = () => {
 
 app.post("/login",async(req,res)=>{
 try {
-    const{email,password} = req.body
-    const user = await User.findOne({email})
+    const { email, password } = req.body;
 
-    if(!user){
-        return res.status(401).json({message:"Invalid email"})
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid Email" });
     }
 
-    if(user.password !== password){
-        return res.status(401).json({messge:'Invalid Password'})
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Invalide password" });
     }
 
-    const token = jwt.sign({userId:user._id,},secretKey)
+    const token = jwt.sign({ userId: user._id }, secretKey);
 
     res.status(200).json({token})
 } catch (error) {

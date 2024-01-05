@@ -6,15 +6,44 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
-import {useRouter} from "expo-router"
+import { useRouter } from "expo-router";
+import axios from "axios";
+
 const register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const router = useRouter()
+  const router = useRouter();
+
+  const handleRegister = () => {
+    const user = {
+      name: name,
+      email: email,
+      password: password,
+    };
+
+    axios.post("http://localhost:3000/register", user).then((response) => {
+      console.log(response);
+      Alert.alert(
+        "Registration Successful",
+        "You have been registered successfully"
+      );
+      setEmail("")
+      setPassword("")
+      setName("")
+    }).catch((error)=>{
+      Alert.alert(
+        "Registration Failed",
+        "You have not been registered successfully"
+      );
+      console.log("error",error)
+    })
+  };
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -31,6 +60,36 @@ const register = () => {
           </Text>
         </View>
         <View style={{ marginTop: 70 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+              backgroundColor: "#e0e0e0",
+              paddingVertical: 5,
+              borderRadius: 5,
+              marginTop: 30,
+            }}
+          >
+            <MaterialIcons
+              style={{ marginLeft: 8 }}
+              name="person"
+              size={24}
+              color="gray"
+            />
+            <TextInput
+              value={name}
+              onChangeText={(text) => setName(text)}
+              style={{
+                color: "gray",
+                marginVertical: 10,
+                width: 300,
+                fontSize: email ? 17 : 17,
+              }}
+              placeholder="Enter your name"
+              placeholderTextColor="grey"
+            />
+          </View>
           <View
             style={{
               flexDirection: "row",
@@ -92,10 +151,11 @@ const register = () => {
               placeholderTextColor="grey"
             />
           </View>
-        
+
           <View style={{ marginTop: 60 }} />
 
           <Pressable
+            onPress={handleRegister}
             style={{
               width: 200,
               backgroundColor: "#6699cc",
@@ -116,7 +176,10 @@ const register = () => {
               Register
             </Text>
           </Pressable>
-          <Pressable onPress={()=> router.push("/login")} style={{ marginTop: 15 }}>
+          <Pressable
+            onPress={() => router.push("/login")}
+            style={{ marginTop: 15 }}
+          >
             <Text style={{ textAlign: "center", fontSize: 15, color: "gray" }}>
               Already have an account? Sign in
             </Text>
