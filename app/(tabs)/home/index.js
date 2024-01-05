@@ -20,10 +20,12 @@ import {
   SlideAnimation,
   ModalContent,
 } from "react-native-modals";
+import axios from "axios";
 
 const index = () => {
   const todos = [];
   const [isModalVisible, setModalVisible] = useState(false);
+  const [category, setCategory] = useState("All");
   const [todo, setTodo] = useState("");
   const suggestions = [
     {
@@ -51,6 +53,28 @@ const index = () => {
       todo: "finish assignments",
     },
   ];
+
+  const addTodo = async () => {
+    try {
+      const todoData = {
+        title: todo,
+        category: category,
+      };
+      axios
+        .post("http://localhost:3000/todos/6597dc9ab01b6d1fdca95477", todoData)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+
+      setModalVisible(false);
+      setTodo("");
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
   return (
     <>
       <View
@@ -188,7 +212,7 @@ const index = () => {
                 flex: 1,
               }}
             />
-            <Ionicons name="send" size={24} color="#007fff" />
+            <Ionicons name="send" onPress={addTodo} size={24} color="#007fff" />
           </View>
           <Text>Choose Category</Text>
           <View
@@ -200,6 +224,7 @@ const index = () => {
             }}
           >
             <Pressable
+              onPress={() => setCategory("Work")}
               style={{
                 borderColor: "#e0e0e0",
                 paddingHorizontal: 10,
@@ -211,6 +236,7 @@ const index = () => {
               <Text>Work</Text>
             </Pressable>
             <Pressable
+              onPress={() => setCategory("Personal")}
               style={{
                 borderColor: "#e0e0e0",
                 paddingHorizontal: 10,
@@ -222,6 +248,7 @@ const index = () => {
               <Text>Personal</Text>
             </Pressable>
             <Pressable
+              onPress={() => setCategory("Wishlist")}
               style={{
                 borderColor: "#e0e0e0",
                 paddingHorizontal: 10,
@@ -234,9 +261,18 @@ const index = () => {
             </Pressable>
           </View>
           <Text>Some Suggestions</Text>
-          <View style={{flexDirection:'row',alignItems:'center',gap:10,flexWrap:"wrap",marginVertical:10}}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              flexWrap: "wrap",
+              marginVertical: 10,
+            }}
+          >
             {suggestions?.map((item, index) => (
               <Pressable
+                onPress={() => setTodo(item?.todo)}
                 key={index}
                 style={{
                   backgroundColor: "#f0f8ff",
@@ -245,7 +281,7 @@ const index = () => {
                   borderRadius: 25,
                 }}
               >
-                <Text style={{textAlign:'center'}}>{item?.todo}</Text>
+                <Text style={{ textAlign: "center" }}>{item?.todo}</Text>
               </Pressable>
             ))}
           </View>
