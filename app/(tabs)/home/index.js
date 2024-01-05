@@ -26,8 +26,11 @@ import {
 } from "react-native-modals";
 import axios from "axios";
 import moment from "moment";
+import jwt_decode from 'jwt-decode';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const index = () => {
+  const [userId, setUserId] = useState("");
   const [todos,setTodos] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [category, setCategory] = useState("All");
@@ -36,6 +39,7 @@ const index = () => {
   const [pendingTodos, setPendingTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [marked, setMarked] = useState(false);
+  const [user, setUser] = useState();
   const suggestions = [
     {
       id: "0",
@@ -63,6 +67,32 @@ const index = () => {
     },
   ];
 
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.userId;
+      setUserId(userId);
+    };
+
+    fetchUser();
+  }, []);
+
+ 
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/profile/${userId}`
+      );
+      const userData = response.data.user;
+      setUser(userData);
+    } catch (error) {
+      console.log("error fetching user profile", error);
+    }
+  };
+ 
+
   const addTodo = async () => {
     try {
       const todoData = {
@@ -70,7 +100,7 @@ const index = () => {
         category: category,
       };
       axios
-        .post("http://localhost:3000/todos/6597dc9ab01b6d1fdca95477", todoData)
+        .post(`http://localhost:3000/todos/${userId}`, todoData)
         .then((response) => {
           console.log(response);
         })
@@ -86,14 +116,18 @@ const index = () => {
     }
   };
   useEffect(() => {
+
+    if (userId) {
+      fetchUserProfile();
+    }
     
     getUserTodos();
-  }, [marked, isModalVisible]);
+  }, [marked, isModalVisible,userId]);
 
   const getUserTodos = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/users/6597dc9ab01b6d1fdca95477/todos`
+        `http://localhost:3000/users/${userId}/todos`
       );
 
       // console.log(response.data.todos);
