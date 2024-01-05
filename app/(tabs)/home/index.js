@@ -78,6 +78,7 @@ const index = () => {
           console.log("error", error);
         });
 
+        await getUserTodos()
       setModalVisible(false);
       setTodo("");
     } catch (error) {
@@ -85,6 +86,7 @@ const index = () => {
     }
   };
   useEffect(() => {
+    
     getUserTodos();
   }, [marked, isModalVisible]);
 
@@ -94,7 +96,7 @@ const index = () => {
         `http://localhost:3000/users/6597dc9ab01b6d1fdca95477/todos`
       );
 
-      console.log(response.data.todos);
+      // console.log(response.data.todos);
       setTodos(response.data.todos);
 
       const fetchedTodos = response.data.todos || [];
@@ -118,13 +120,13 @@ const index = () => {
       const response = await axios.patch(
         `http://localhost:3000/todos/${todoId}/complete`
       );
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.log("error", error);
     }
   };
-  console.log("completed", completedTodos);
-  console.log("pending", pendingTodos);
+  // console.log("completed", completedTodos);
+  // console.log("pending", pendingTodos);
   return (
     <>
       <View
@@ -449,3 +451,11 @@ const index = () => {
 export default index;
 
 const styles = StyleSheet.create({});
+
+
+const decodeToken = (token) => {
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const decodedData = JSON.parse(atob(base64));
+  return decodedData;
+};
