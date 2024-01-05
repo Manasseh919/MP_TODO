@@ -27,7 +27,7 @@ const register = () => {
       password: password,
     };
 
-    axios.post("http://localhost:3000/register", user).then((response) => {
+    axios.post("https://backend-mp-todo.onrender.com/register", user).then((response) => {
       console.log(response);
       Alert.alert(
         "Registration Successful",
@@ -36,6 +36,7 @@ const register = () => {
       setEmail("")
       setPassword("")
       setName("")
+      router.replace("/(tabs)/home");
     }).catch((error)=>{
       Alert.alert(
         "Registration Failed",
@@ -109,6 +110,7 @@ const register = () => {
             />
             <TextInput
               value={email}
+              autoCapitalize="none"
               onChangeText={(text) => setEmail(text)}
               style={{
                 color: "gray",
@@ -147,7 +149,7 @@ const register = () => {
                 width: 300,
                 fontSize: email ? 17 : 17,
               }}
-              placeholder="Enter email"
+              placeholder="Enter Password"
               placeholderTextColor="grey"
             />
           </View>

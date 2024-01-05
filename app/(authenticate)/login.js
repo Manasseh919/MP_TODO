@@ -37,7 +37,7 @@ const login = () => {
       email: email,
       password: password,
     };
-    axios.post("http://localhost:3000/login", user).then((response) => {
+    axios.post("https://backend-mp-todo.onrender.com/login", user).then((response) => {
       const token = response.data.token;
       AsyncStorage.setItem("authToken", token);
       router.replace("/(tabs)/home");
@@ -78,6 +78,7 @@ const login = () => {
             />
             <TextInput
               value={email}
+              autoCapitalize="none"
               onChangeText={(text) => setEmail(text)}
               style={{
                 color: "gray",
@@ -117,7 +118,7 @@ const login = () => {
                 width: 300,
                 fontSize: email ? 17 : 17,
               }}
-              placeholder="Enter email"
+              placeholder="Enter Password"
               placeholderTextColor="grey"
             />
           </View>

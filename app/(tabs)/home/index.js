@@ -28,8 +28,10 @@ import axios from "axios";
 import moment from "moment";
 import jwt_decode from 'jwt-decode';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 const index = () => {
+  const router = useRouter();
   const [userId, setUserId] = useState("");
   const [todos,setTodos] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -83,7 +85,7 @@ const index = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/profile/${userId}`
+        `https://backend-mp-todo.onrender.com/profile/${userId}`
       );
       const userData = response.data.user;
       setUser(userData);
@@ -100,7 +102,7 @@ const index = () => {
         category: category,
       };
       axios
-        .post(`http://localhost:3000/todos/${userId}`, todoData)
+        .post(`https://backend-mp-todo.onrender.com/todos/${userId}`, todoData)
         .then((response) => {
           console.log(response);
         })
@@ -127,7 +129,7 @@ const index = () => {
   const getUserTodos = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/users/${userId}/todos`
+        `https://backend-mp-todo.onrender.com/users/${userId}/todos`
       );
 
       // console.log(response.data.todos);
@@ -152,7 +154,7 @@ const index = () => {
     try {
       setMarked(true);
       const response = await axios.patch(
-        `http://localhost:3000/todos/${todoId}/complete`
+        `https://backend-mp-todo.onrender.com/todos/${todoId}/complete`
       );
       // console.log(response.data);
     } catch (error) {
